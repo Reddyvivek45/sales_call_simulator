@@ -25,7 +25,7 @@ class OllamaClient:
             "keep_alive": "30m",
 
             "options": {
-                        "temperature": 0.75,
+                        "temperature": 0.76,
                         "top_p": 0.9,
                         "repeat_penalty": 1.3,
                         "num_ctx": 4096,
