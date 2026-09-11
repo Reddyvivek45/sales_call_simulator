@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+Dashboard | VijAI
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/dashboard.css' %}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard">
+
+
+    <!-- HEADER -->
+
+    <header class="dashboard-header">
+
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Welcome back, Vivek.
+                Ready for your next sales training?
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- TRAINING CARD -->
+
+    <section class="training-card">
+
+        <div class="training-card-content">
+
+            <span class="eyebrow">
+                SALES TRAINING
+            </span>
+
+            <h2>
+                Practice with an AI buyer
+            </h2>
+
+            <p>
+                Improve your sales skills by handling
+                realistic customer objections.
+            </p>
+
+            <a
+                href="{% url 'training_setup' %}"
+                class="primary-button"
+            >
+                Start Training →
+            </a>
+
+        </div>
+
+
+        <div class="training-card-icon">
+        </div>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>
+                Average Score
+            </span>
+
+            <strong>
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Sessions Completed
+            </span>
+
+            <strong>
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Best Score
+            </span>
+
+            <strong>
+                —
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- BUYER -->
+
+    <section class="buyer-card">
+
+        <div>
+
+            <span class="eyebrow">
+                CURRENT BUYER
+            </span>
+
+            <h2>
+                KLM Fashion Mall
+            </h2>
+
+            <p>
+                FIREAI Sales Simulation
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}

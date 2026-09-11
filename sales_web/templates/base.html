@@ -1,0 +1,169 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+       Chanakya Sales Training
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/base.css' %}"
+    >
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+       <div class="brand-icon">
+        <img src="{% static 'images/logo.png' %}" alt="VB Logo" class="brand-logo-img">
+        </div>
+
+    <div>
+        <div class="brand-title">
+            Chanakya
+        </div>
+
+        <div class="brand-subtitle">
+            Sales Training
+        </div>
+    </div>
+
+</div>
+
+
+        <nav class="navigation">
+
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="{% url 'training_setup' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🎯
+                </span>
+
+                <span>
+                    Training
+                </span>
+
+            </a>
+
+
+            <a
+                href="{% url 'history' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◷
+                </span>
+
+                <span>
+                    History
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-profile">
+
+                <div class="user-avatar">
+                    V
+                </div>
+
+                <div class="user-details">
+
+                    <div class="user-name">
+                        Vivek
+                    </div>
+
+                    <div class="user-role">
+                        Salesperson
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+
+<script
+    src="{% static 'js/base.js' %}"
+></script>
+
+
+{% block extra_js %}
+{% endblock %}
+
+
+</body>
+
+</html>

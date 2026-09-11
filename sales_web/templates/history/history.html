@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+History | VijAI
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/history.css' %}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="history-page">
+
+    <header class="page-header">
+
+        <h1>
+            Training History
+        </h1>
+
+        <p>
+            Review your previous sales training sessions.
+        </p>
+
+    </header>
+
+
+    <div class="history-list">
+
+        {% for session in sessions %}
+
+        <a
+            href="{% url 'session_analysis' session.id %}"
+            class="history-item"
+        >
+
+            <div>
+
+                <strong>
+                    {{ session.client_name }}
+                </strong>
+
+                <span>
+                    {{ session.product_name }}
+                </span>
+
+            </div>
+
+
+            <div class="history-meta">
+
+                <span>
+                    {{ session.status }}
+                </span>
+
+                <span>
+                    {{ session.started_at }}
+                </span>
+
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="empty-history">
+
+            No training sessions yet.
+
+            <a href="{% url 'training' %}">
+                Start your first training session →
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

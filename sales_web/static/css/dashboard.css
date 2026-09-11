@@ -1,0 +1,286 @@
+.dashboard {
+
+    height: 100%;
+
+    width: 100%;
+    overflow-y: auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+
+.dashboard-header {
+
+    margin-bottom: 30px;
+}
+
+
+.dashboard-header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 700;
+}
+
+
+.dashboard-header p {
+
+    margin: 8px 0 0;
+
+    color: #6b7280;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   TRAINING CARD
+========================================================= */
+
+.training-card {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 35px;
+
+    border-radius: 16px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    margin-bottom: 22px;
+}
+
+
+.eyebrow {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #6b7280;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+
+.training-card h2 {
+
+    margin: 0;
+
+    font-size: 24px;
+}
+
+
+.training-card p {
+
+    max-width: 600px;
+
+    color: #6b7280;
+
+    line-height: 1.6;
+}
+
+
+.primary-button {
+
+    display: inline-block;
+
+    margin-top: 12px;
+
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.primary-button:hover {
+
+    background: #1d4ed8;
+}
+
+
+.training-card-icon {
+
+    font-size: 55px;
+
+    padding: 20px;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.stat-card {
+
+    padding: 22px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+}
+
+
+.stat-card span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+.stat-card strong {
+
+    display: block;
+
+    margin-top: 10px;
+
+    font-size: 28px;
+}
+
+
+/* =========================================================
+   BUYER
+========================================================= */
+
+.buyer-card {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 25px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+}
+
+
+.buyer-card h2 {
+
+    margin: 0;
+
+    font-size: 19px;
+}
+
+
+.buyer-card p {
+
+    margin: 5px 0 0;
+
+    color: #6b7280;
+}
+
+
+.personality {
+
+    text-align: right;
+}
+
+
+.personality span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+
+.personality strong {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 14px;
+}
+
+
+@media (max-width: 700px) {
+
+    .dashboard {
+
+        padding: 20px;
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .training-card {
+
+        padding: 25px;
+    }
+
+
+    .training-card-icon {
+
+        display: none;
+    }
+
+
+    .buyer-card {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+
+    .personality {
+
+        text-align: left;
+    }
+
+}

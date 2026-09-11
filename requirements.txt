@@ -1,0 +1,7 @@
+streamlit
+chromadb
+sentence-transformers
+requests
+sqlalchemy
+psycopg[binary]
+django

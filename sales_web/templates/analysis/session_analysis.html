@@ -1,0 +1,590 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Session Analysis
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/analysis.css' %}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div
+    class="analysis-page"
+    data-session-id="{{ session.id }}"
+    data-analysis-exists="{% if analysis_exists %}true{% else %}false{% endif %}"
+>
+
+
+    {% if error %}
+
+        <div class="analysis-error">
+            {{ error }}
+        </div>
+
+
+    {% elif not analysis_exists %}
+
+        <!-- ==================================================
+             ANALYSIS LOADING
+             ================================================== -->
+
+        <div
+            id="analysis-loading"
+            class="analysis-loading"
+        >
+
+            <div class="loading-content">
+
+                <div class="loading-spinner"></div>
+
+                <h2>
+                    Analyzing Session
+                </h2>
+
+                <p id="loading-message">
+                    Reviewing your sales conversation...
+                </p>
+
+                <div class="loading-status">
+                    This may take a little while.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             ANALYSIS ERROR
+             ================================================== -->
+
+        <div
+            id="analysis-generation-error"
+            class="analysis-error hidden"
+        ></div>
+
+
+    {% else %}
+
+        <!-- ==================================================
+             HEADER
+             ================================================== -->
+
+        <div class="analysis-header">
+
+            <h1>
+                Session Analysis
+            </h1>
+
+            <p>
+                {{ session.client_name }}
+                ·
+                {{ session.product_name }}
+            </p>
+
+        </div>
+
+
+        <!-- ==================================================
+             TOP
+             ================================================== -->
+
+        <div class="analysis-top-grid">
+
+
+            <div class="overall-score-card">
+
+                <div
+                    class="score-circle"
+                    data-score="{{ analysis.overall_score }}"
+                >
+
+                    <span>
+                        {{ analysis.overall_score }}
+                    </span>
+
+                </div>
+
+                <h2>
+                    Overall Performance
+                </h2>
+
+                <p>
+                    Score out of 100
+                </p>
+
+            </div>
+
+
+            <div class="session-config-card">
+
+                <h2>
+                    Training Configuration
+                </h2>
+
+                <div class="config-grid">
+
+                    <div class="config-item">
+
+                        <span class="config-label">
+                            Buyer Personality
+                        </span>
+
+                        <span class="config-value">
+                            {{ session.personality|default:"Not specified"|title }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="config-item">
+
+                        <span class="config-label">
+                            Difficulty
+                        </span>
+
+                        <span class="config-value">
+                            {{ session.difficulty|default:"Not specified"|title }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="config-item">
+
+                        <span class="config-label">
+                            Focus Area
+                        </span>
+
+                        <span class="config-value">
+                            {{ session.focus_area|default:"General"|title }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="config-item">
+
+                        <span class="config-label">
+                            Session Length
+                        </span>
+
+                        <span class="config-value">
+                            {{ session.session_length|default:"Quick"|title }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             PERFORMANCE
+             ================================================== -->
+
+        <div class="analysis-section">
+
+            <h2>
+                Performance Breakdown
+            </h2>
+
+            <div class="score-list">
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Product Knowledge
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.product_knowledge }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.product_knowledge }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Needs Discovery
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.needs_discovery }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.needs_discovery }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Objection Handling
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.objection_handling }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.objection_handling }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Value Selling
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.value_selling }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.value_selling }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Communication
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.communication }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.communication }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-item">
+
+                    <div class="score-item-header">
+
+                        <span class="score-name">
+                            Closing
+                        </span>
+
+                        <span class="score-number">
+                            {{ analysis.scores.closing }}/100
+                        </span>
+
+                    </div>
+
+                    <div class="score-bar">
+                        <div
+                            class="score-fill"
+                            data-score="{{ analysis.scores.closing }}"
+                        ></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             METRICS
+             ================================================== -->
+
+        <div class="analysis-section">
+
+            <h2>
+                Conversation Metrics
+            </h2>
+
+            <div class="metrics-grid">
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Questions Asked
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.questions_asked }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Salesperson Messages
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.total_salesperson_messages }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Buyer Messages
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.total_buyer_messages }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Pricing Discussed
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.pricing_discussed|yesno:"Yes,No" }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Value / ROI Discussed
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.value_discussed|yesno:"Yes,No" }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Next Step Attempt
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.closing_or_next_step_attempt|yesno:"Yes,No" }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Technical Discussion
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.technical_discussion|yesno:"Yes,No" }}
+                    </span>
+                </div>
+
+
+                <div class="metric-card">
+                    <span class="metric-label">
+                        Avg. Response Length
+                    </span>
+                    <span class="metric-value">
+                        {{ analysis.objective_metrics.average_salesperson_response_words }}
+                        words
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             STRENGTHS / WEAKNESSES
+             ================================================== -->
+
+        <div class="analysis-two-column">
+
+            <div class="analysis-section">
+
+                <h2>
+                    Strengths
+                </h2>
+
+                <ul class="analysis-list">
+
+                    {% for item in analysis.strengths %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>No specific strengths identified.</li>
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+            <div class="analysis-section">
+
+                <h2>
+                    Areas for Improvement
+                </h2>
+
+                <ul class="analysis-list">
+
+                    {% for item in analysis.weaknesses %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>No specific weaknesses identified.</li>
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             RECOMMENDATIONS
+             ================================================== -->
+
+        <div class="analysis-section">
+
+            <h2>
+                Recommendations
+            </h2>
+
+            <ul class="analysis-list">
+
+                {% for item in analysis.recommendations %}
+                    <li>{{ item }}</li>
+                {% empty %}
+                    <li>No recommendations available.</li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+
+        <!-- ==================================================
+             SUMMARY
+             ================================================== -->
+
+        <div class="analysis-section">
+
+            <h2>
+                Overall Summary
+            </h2>
+
+            <p class="summary-text">
+                {{ analysis.summary }}
+            </p>
+
+        </div>
+
+
+        <!-- ==================================================
+             EVIDENCE
+             ================================================== -->
+
+        <div class="analysis-section">
+
+            <h2>
+                Evaluation Evidence
+            </h2>
+
+            {% for item in analysis.evidence %}
+
+                <div class="evidence-card">
+
+                    <div class="evidence-category">
+                        {{ item.category }}
+                    </div>
+
+                    <p class="evidence-quote">
+                        "{{ item.salesperson_statement }}"
+                    </p>
+
+                    <p class="evidence-assessment">
+                        {{ item.assessment }}
+                    </p>
+
+                </div>
+
+            {% empty %}
+
+                <p>
+                    No evidence was returned by the evaluator.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script
+    src="{% static 'js/analysis.js' %}"
+></script>
+
+{% endblock %}

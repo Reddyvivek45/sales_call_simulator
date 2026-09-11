@@ -1,0 +1,10 @@
+.venv/
+config.py
+db.sqlite3
+.venv/
+config.py
+db.sqlite3
+__pycache__/
+logs/
+prompt/
+session/

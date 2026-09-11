@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Training | VijAI
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'css/training.css' %}"
+>
+{% endblock %}
+
+{% block content %}
+
+<div class="training-page">
+
+    <!-- =====================================================
+         TRAINING HEADER
+    ====================================================== -->
+
+    <header class="training-header">
+
+        <div>
+
+            <div class="training-name">
+                KLM Fashion Mall
+            </div>
+
+            <div class="training-product">
+                FIREAI Sales Simulation
+            </div>
+
+        </div>
+
+
+        <div class="training-header-right">
+
+            <div class="buyer-status">
+
+                <span class="status-dot"></span>
+
+                AI Buyer
+
+            </div>
+
+            <div class="session-settings">
+
+                <span>
+                    Buyer:
+                </span>
+
+                <strong id="personalityBadge">
+                    -
+                </strong>
+
+                <span>
+                    ·
+                </span>
+
+                <span>
+                    Difficulty:
+                </span>
+
+                <strong id="difficultyBadge">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         SESSION INFO
+    ====================================================== -->
+
+    <div class="buyer-info">
+
+        <span>
+            Focus
+        </span>
+
+        <strong id="focusBadge">
+            General
+        </strong>
+
+    </div>
+
+
+    <!-- =====================================================
+         CHAT MESSAGES
+    ====================================================== -->
+
+    <div
+        id="messages"
+        class="messages"
+    >
+    </div>
+
+
+    <!-- =====================================================
+         INPUT
+    ====================================================== -->
+
+    <div class="input-wrapper">
+
+        <div class="input-area">
+
+            <textarea
+                id="messageInput"
+                rows="1"
+                placeholder="Respond as the VijAI salesperson..."
+            ></textarea>
+
+            <button
+                id="sendButton"
+                type="button"
+            >
+                Send
+            </button>
+
+        </div>
+
+        <div class="input-hint">
+            Press Enter to send · Shift + Enter for new line
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         END
+    ====================================================== -->
+
+    <div class="training-actions">
+
+        <button
+            id="endTraining"
+            type="button"
+        >
+            End Training
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+window.TRAINING_CONFIG = {
+
+    sessionId:
+        "{{ session_id }}"
+
+};
+
+</script>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script
+    src="{% static 'js/training.js' %}"
+></script>
+
+{% endblock %}

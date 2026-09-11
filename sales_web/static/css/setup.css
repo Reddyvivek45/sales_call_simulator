@@ -1,0 +1,416 @@
+/* =========================================================
+   SETUP PAGE
+========================================================= */
+
+.setup-page {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 35px 40px 45px;
+    box-sizing: border-box; /* Includes padding in full width and height calculations */
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.setup-header {
+    margin-bottom: 28px;
+}
+
+.setup-header h1 {
+    margin: 4px 0 8px;
+    font-size: 30px;
+    color: #111827;
+}
+
+.setup-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.eyebrow {
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   SESSION CHOICE
+========================================================= */
+
+.session-choice {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+}
+
+.choice-card {
+    padding: 20px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+}
+
+.choice-card.active {
+    border: 2px solid #60a5fa;
+    padding: 19px;
+}
+
+.choice-top {
+    height: 24px;
+}
+
+.choice-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 7px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.choice-badge.muted {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.choice-icon {
+    margin-top: 8px;
+    font-size: 21px;
+}
+
+.choice-card h2 {
+    margin: 5px 0;
+    font-size: 17px;
+    color: #111827;
+}
+
+.choice-card p {
+    margin: 0 0 16px;
+    max-width: 450px;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.choice-button {
+    width: 100%;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    background: #111111;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.choice-button:hover {
+    background: #222222;
+}
+
+.choice-button.secondary {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #111827;
+}
+
+.choice-button.secondary:hover {
+    background: #f9fafb;
+}
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+.configuration-panel {
+    margin-top: 10px;
+}
+
+.section-title {
+    margin-bottom: 12px;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.configuration-section {
+    margin-bottom: 22px;
+}
+
+.configuration-title {
+    margin-bottom: 9px;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.configuration-title span {
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   PERSONALITY
+========================================================= */
+
+.personality-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.personality-card {
+    min-height: 76px;
+    padding: 13px;
+    background: white;
+    border: 1px solid #dfe3e8;
+    border-radius: 9px;
+    cursor: pointer;
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.personality-card:hover {
+    border-color: #93c5fd;
+}
+
+.personality-card.selected {
+    background: #dbeafe;
+    border-color: #60a5fa;
+}
+
+.personality-name {
+    color: #111827;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.personality-description {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.difficulty-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.option-button {
+    height: 38px;
+    border: 1px solid #dfe3e8;
+    border-radius: 8px;
+    background: white;
+    color: #111827;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.option-button:hover {
+    border-color: #93c5fd;
+}
+
+.option-button.selected {
+    background: #dbeafe;
+    border-color: #60a5fa;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.focus-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.focus-button {
+    padding: 8px 13px;
+    border: 1px solid #dfe3e8;
+    border-radius: 18px;
+    background: white;
+    color: #374151;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.focus-button:hover {
+    border-color: #93c5fd;
+}
+
+.focus-button.selected {
+    background: #dbeafe;
+    border-color: #60a5fa;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   START BUTTON
+========================================================= */
+
+.start-section {
+    margin-top: 28px;
+}
+
+.start-training-button {
+    width: 100%;
+    height: 42px;
+    border: none;
+    border-radius: 8px;
+    background: #111111;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.start-training-button:hover:not(:disabled) {
+    background: #222222;
+}
+
+.start-training-button:disabled {
+    background: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESUME
+========================================================= */
+
+.resume-panel {
+    margin-top: 10px;
+}
+
+.resume-description {
+    margin-top: -5px;
+    margin-bottom: 18px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.active-sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.active-session {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 17px 18px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.active-session-info h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.active-session-info p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.session-meta {
+    margin-top: 7px;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+.resume-button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 7px;
+    background: #111111;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.resume-button:hover {
+    background: #222222;
+}
+
+.no-sessions {
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.loading {
+    padding: 30px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .personality-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .setup-page {
+        padding: 25px 20px;
+    }
+
+    .session-choice {
+        grid-template-columns: 1fr;
+    }
+
+    .personality-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .difficulty-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

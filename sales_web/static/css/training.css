@@ -1,0 +1,314 @@
+/* =========================================================
+   TRAINING PAGE
+========================================================= */
+
+.training-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #f7f8fa;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.training-header {
+    flex-shrink: 0;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.training-name {
+    font-size: 17px;
+    font-weight: 650;
+}
+
+.training-product {
+    margin-top: 3px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.training-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.buyer-status {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.status-dot {
+    display: inline-block;
+
+    width: 8px;
+    height: 8px;
+
+    margin-right: 5px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+.session-settings {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.session-settings strong {
+    color: #111827;
+}
+
+
+/* =========================================================
+   BUYER INFO
+========================================================= */
+
+.buyer-info {
+    flex-shrink: 0;
+
+    padding: 10px 30px;
+
+    background: #fafafa;
+    border-bottom: 1px solid #eeeeee;
+
+    font-size: 12px;
+}
+
+.buyer-info span {
+    margin-right: 8px;
+    color: #6b7280;
+}
+
+.buyer-info strong {
+    color: #111827;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.messages {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 30px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message-content {
+    max-width: 72%;
+
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    line-height: 1.55;
+    white-space: pre-wrap;
+
+    font-size: 15px;
+}
+
+.message.assistant .message-content {
+    background: white;
+    border: 1px solid #e5e7eb;
+}
+
+.message.user .message-content {
+    background: #2563eb;
+    color: white;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper {
+    flex-shrink: 0;
+
+    padding: 10px 30px 5px;
+
+    background: #f7f8fa;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+
+    max-width: 900px;
+    margin: auto;
+
+    padding: 8px;
+
+    background: white;
+
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+}
+
+#messageInput {
+    flex: 1;
+
+    resize: none;
+
+    border: none;
+    outline: none;
+
+    padding: 10px;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    min-height: 42px;
+    max-height: 150px;
+}
+
+#sendButton {
+    align-self: flex-end;
+
+    width: 70px;
+    height: 40px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #2563eb;
+    color: white;
+
+    cursor: pointer;
+}
+
+#sendButton:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+#sendButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.input-hint {
+    max-width: 900px;
+
+    margin: 4px auto 0;
+
+    text-align: center;
+
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   END TRAINING
+========================================================= */
+
+.training-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    justify-content: center;
+
+    padding: 8px 20px 15px;
+}
+
+#endTraining {
+    border: none;
+
+    background: transparent;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+#endTraining:hover {
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading {
+    text-align: center;
+
+    color: #9ca3af;
+
+    padding: 30px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .training-header {
+        padding: 0 15px;
+    }
+
+    .training-header-right {
+        gap: 8px;
+    }
+
+    .session-settings {
+        display: none;
+    }
+
+    .buyer-info {
+        padding: 10px 15px;
+    }
+
+    .messages {
+        padding: 20px 15px;
+    }
+
+    .input-wrapper {
+        padding: 8px 10px;
+    }
+
+    .message-content {
+        max-width: 90%;
+    }
+
+}

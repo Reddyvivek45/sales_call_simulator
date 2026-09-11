@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Training Setup | VijAI
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/setup.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="setup-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="setup-header">
+
+        <div>
+            <span class="eyebrow">
+                SALES TRAINING
+            </span>
+
+            <h1>
+                Training Setup
+            </h1>
+
+            <p>
+                Start a new buyer simulation or resume an unfinished session.
+            </p>
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         SESSION CHOICE
+    ====================================================== -->
+
+    <section class="session-choice">
+
+        <!-- START FRESH -->
+
+        <div
+            id="freshCard"
+            class="choice-card active"
+        >
+
+            <div class="choice-top">
+
+                <span class="choice-badge">
+                    Recommended
+                </span>
+
+            </div>
+
+            <div class="choice-icon">
+                ✨
+            </div>
+
+            <h2>
+                Start fresh session
+            </h2>
+
+            <p>
+                Choose a buyer, difficulty, and scenario
+                to practice from scratch.
+            </p>
+
+            <button
+                id="freshSessionButton"
+                class="choice-button"
+                type="button"
+            >
+                Set up new session
+            </button>
+
+        </div>
+
+
+        <!-- RESUME -->
+
+        <div
+            id="resumeCard"
+            class="choice-card"
+        >
+
+            <div class="choice-top">
+
+                <span
+                    id="activeSessionBadge"
+                    class="choice-badge muted"
+                >
+                    Loading...
+                </span>
+
+            </div>
+
+            <div class="choice-icon">
+                ↻
+            </div>
+
+            <h2>
+                Resume a session
+            </h2>
+
+            <p>
+                Continue an unfinished conversation
+                or replay a previous scenario.
+            </p>
+
+            <button
+                id="resumeSessionButton"
+                class="choice-button secondary"
+                type="button"
+            >
+                View active sessions
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FRESH SESSION SETUP
+    ====================================================== -->
+
+    <section
+        id="freshSetup"
+        class="configuration-panel"
+    >
+
+        <div class="section-title">
+            New session setup
+        </div>
+
+
+        <!-- PERSONALITY -->
+
+        <div class="configuration-section">
+
+            <div class="configuration-title">
+                1. Buyer personality
+            </div>
+
+            <div
+                id="personalityContainer"
+                class="personality-grid"
+            >
+
+                <div class="loading">
+                    Loading buyer personalities...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DIFFICULTY -->
+
+        <div class="configuration-section">
+
+            <div class="configuration-title">
+                2. Difficulty
+            </div>
+
+            <div class="option-grid difficulty-grid">
+
+                <button
+                    class="option-button"
+                    data-difficulty="easy"
+                    type="button"
+                >
+                    Easy
+                </button>
+
+                <button
+                    class="option-button selected"
+                    data-difficulty="medium"
+                    type="button"
+                >
+                    Medium
+                </button>
+
+                <button
+                    class="option-button"
+                    data-difficulty="hard"
+                    type="button"
+                >
+                    Hard
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SESSION LENGTH -->
+
+        <div class="configuration-section">
+
+            <div class="configuration-title">
+                3. Session length
+            </div>
+
+            <div class="option-grid">
+
+                <button
+                    class="option-button selected"
+                    data-length="quick"
+                    type="button"
+                >
+                    Quick (5m)
+                </button>
+
+                <button
+                    class="option-button"
+                    data-length="full"
+                    type="button"
+                >
+                    Full (15m)
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOCUS -->
+
+        <div class="configuration-section">
+
+            <div class="configuration-title">
+                4. Focus area
+                <span>(optional)</span>
+            </div>
+
+            <div class="focus-grid">
+
+                <button
+                    class="focus-button"
+                    data-focus="objection_handling"
+                    type="button"
+                >
+                    Objection handling
+                </button>
+
+                <button
+                    class="focus-button"
+                    data-focus="closing"
+                    type="button"
+                >
+                    Closing
+                </button>
+
+                <button
+                    class="focus-button"
+                    data-focus="pricing_negotiation"
+                    type="button"
+                >
+                    Pricing negotiation
+                </button>
+
+                <button
+                    class="focus-button"
+                    data-focus="rapport_building"
+                    type="button"
+                >
+                    Rapport building
+                </button>
+
+                <button
+                    class="focus-button"
+                    data-focus="product_knowledge"
+                    type="button"
+                >
+                    Product knowledge
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- START -->
+
+        <div class="start-section">
+
+            <button
+                id="startTrainingButton"
+                class="start-training-button"
+                type="button"
+                disabled
+            >
+                Start training →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESUME SESSIONS
+    ====================================================== -->
+
+    <section
+        id="resumePanel"
+        class="resume-panel"
+        style="display:none;"
+    >
+
+        <div class="section-title">
+            In-progress sessions
+        </div>
+
+        <p class="resume-description">
+            Select an unfinished session to continue where you left off.
+        </p>
+
+        <div
+            id="activeSessionsContainer"
+            class="active-sessions"
+        >
+
+            <div class="loading">
+                Loading active sessions...
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="{% static 'js/setup.js' %}"></script>
+
+{% endblock %}
