@@ -223,6 +223,14 @@ class SalesSimulatorService:
         )
 
     # ====================================================
+    # DASHBOARD DATA
+    # ====================================================
+
+    def get_dashboard_data(self):
+
+        return self.repository.get_dashboard_data(client_name=CLIENT_NAME)
+
+    # ====================================================
     # CHAT STREAM
     # ====================================================
 
@@ -531,6 +539,15 @@ class SalesSimulatorService:
         return json.loads(
             analysis["analysis_json"]
     )
+    # ====================================================
+    # GET HISTORY SESSIONS  
+    # ====================================================
+
+
+    def get_history_sessions(self,client_name=CLIENT_NAME,):
+
+        return self.repository.get_history_sessions(client_name=client_name,)
+    
     # ====================================================
     # END SESSION
     # ====================================================

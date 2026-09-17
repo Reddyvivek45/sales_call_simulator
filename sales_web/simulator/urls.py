@@ -9,6 +9,12 @@ urlpatterns = [
         views.dashboard,
         name="dashboard",
     ),
+    path(
+        "dashboard/data/",
+        views.dashboard_data,
+        name="dashboard_data",
+    ),
+
 
     path(
         "training/setup/",
@@ -49,6 +55,7 @@ urlpatterns = [
         views.session_analysis_status,
         name="session_analysis_status",
     ),
+   
 
     # ========================================================
     # APIs
@@ -101,4 +108,5 @@ urlpatterns = [
         views.get_recent_sessions,
         name="get_recent_sessions",
     ),
+
 ]

@@ -5,14 +5,14 @@
 /* analysis.css */
 
 .analysis-page {
-    max-width: 1180px;
-    margin: 0 auto;
+    /* max-width: 1180px; */
+    /* margin: 0 auto; */
     padding: 32px 24px 60px;
     height: 100%;
     width: 100%; /* Set explicit height to fill main-content */
     overflow-y: auto; /* Enables inner scrollbar */
     overflow-x: hidden;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
 }
 /* ============================================================
    HIDDEN

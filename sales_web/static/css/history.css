@@ -96,7 +96,56 @@
 
     text-align: right;
 }
+.analysis-status {
 
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 7px;
+
+    margin-bottom: 4px;
+}
+
+
+.status-dot {
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    flex-shrink: 0;
+}
+
+
+.status-analysed {
+
+    background-color: #22c55e;
+}
+
+
+.status-pending {
+
+    background-color: #ef4444;
+}
+
+
+.analysis-status .status-text {
+
+    margin-top: 0;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    color: #374151;
+}
 
 .empty-history {
 

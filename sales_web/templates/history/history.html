@@ -59,16 +59,33 @@ History | VijAI
 
             <div class="history-meta">
 
-                <span>
-                    {{ session.status }}
-                </span>
+            <div class="analysis-status">
 
-                <span>
-                    {{ session.started_at }}
-                </span>
+                {% if session.analysis_status == "analysed" %}
+
+                    <span class="status-dot status-analysed"></span>
+
+                    <span class="status-text">
+                        Analysed
+                    </span>
+
+                {% else %}
+
+                    <span class="status-dot status-pending"></span>
+
+                    <span class="status-text">
+                        Analysis Pending
+                    </span>
+
+                {% endif %}
 
             </div>
 
+    <span>
+        {{ session.started_at }}
+    </span>
+
+</div>
         </a>
 
         {% empty %}

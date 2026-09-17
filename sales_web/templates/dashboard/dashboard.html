@@ -1,151 +1,96 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 
 {% block title %}
 Dashboard | VijAI
 {% endblock %}
 
-
 {% block extra_css %}
-
-<link
-    rel="stylesheet"
-    href="{% static 'css/dashboard.css' %}"
->
-
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
-
 {% block content %}
-
 <div class="dashboard">
 
-
     <!-- HEADER -->
-
     <header class="dashboard-header">
-
         <div>
-
-            <h1>
-                Dashboard
-            </h1>
-
-            <p>
-                Welcome back, Vivek.
-                Ready for your next sales training?
-            </p>
-
+            <h1>Dashboard</h1>
+            <p>Welcome back, Vivek. Ready for your next sales training?</p>
         </div>
-
     </header>
 
-
     <!-- TRAINING CARD -->
-
     <section class="training-card">
-
         <div class="training-card-content">
-
-            <span class="eyebrow">
-                SALES TRAINING
-            </span>
-
-            <h2>
-                Practice with an AI buyer
-            </h2>
-
-            <p>
-                Improve your sales skills by handling
-                realistic customer objections.
-            </p>
-
-            <a
-                href="{% url 'training_setup' %}"
-                class="primary-button"
-            >
-                Start Training →
-            </a>
-
+            <span class="eyebrow">SALES TRAINING</span>
+            <h2>Practice with an AI buyer</h2>
+            <p>Improve your sales skills by handling realistic customer objections.</p>
+            <a href="{% url 'training_setup' %}" class="primary-button">Start Training →</a>
         </div>
-
-
-        <div class="training-card-icon">
-        </div>
-
+        <div class="training-card-icon"></div>
     </section>
-
 
     <!-- STATS -->
-
     <section class="stats-grid">
-
         <div class="stat-card">
-
-            <span>
-                Average Score
-            </span>
-
-            <strong>
-                —
-            </strong>
-
+            <span>Average Score</span>
+            <strong id="average-score">—</strong>
         </div>
-
-
         <div class="stat-card">
-
-            <span>
-                Sessions Completed
-            </span>
-
-            <strong>
-                0
-            </strong>
-
+            <span>Sessions Completed</span>
+            <strong id="sessions-completed">0</strong>
         </div>
-
-
         <div class="stat-card">
-
-            <span>
-                Best Score
-            </span>
-
-            <strong>
-                —
-            </strong>
-
+            <span>Best Score</span>
+            <strong id="best-score">—</strong>
         </div>
-
     </section>
 
+    <!-- ANALYTICS -->
+    <section class="dashboard-charts">
+        <!-- SCORE PROGRESS -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <span class="eyebrow">PERFORMANCE</span>
+                    <h2>Score Progress</h2>
+                    <p>Your score across completed training sessions.</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="score-progress-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- SKILL PERFORMANCE -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <span class="eyebrow">SKILLS</span>
+                    <h2>Skill Performance</h2>
+                    <p>See how you performed across the six key sales skills.</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="skill-performance-chart"></canvas>
+            </div>
+        </div>
+    </section>
 
     <!-- BUYER -->
-
     <section class="buyer-card">
-
         <div>
-
-            <span class="eyebrow">
-                CURRENT BUYER
-            </span>
-
-            <h2>
-                KLM Fashion Mall
-            </h2>
-
-            <p>
-                FIREAI Sales Simulation
-            </p>
-
+            <span class="eyebrow">CURRENT BUYER</span>
+            <h2>KLM Fashion Mall</h2>
+            <p>FIREAI Sales Simulation</p>
         </div>
-
     </section>
 
-
 </div>
+{% endblock %} <!-- MAIN CONTENT ENDS HERE -->
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

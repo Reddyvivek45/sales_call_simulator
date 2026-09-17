@@ -9,6 +9,43 @@
     padding: 35px 40px 45px;
     box-sizing: border-box; /* Includes padding in full width and height calculations */
 }
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 8px 14px;
+    
+    color: #4b5563;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect with slight slide to the left */
+.back-button:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateX(-3px);
+}
+
+/* Optional active state for click feedback */
+.back-button:active {
+    transform: translateX(-1px);
+}
 
 
 /* =========================================================

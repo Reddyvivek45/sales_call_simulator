@@ -29,6 +29,31 @@ def dashboard(request):
         request,
         "dashboard/dashboard.html",
     )
+# ============================================================
+# DASHBOARD DATA
+# ============================================================
+
+@require_GET
+def dashboard_data(request):
+
+    try:
+
+        data = service.get_dashboard_data()
+
+        return JsonResponse(data)
+
+    except Exception as exc:
+
+        print(
+            f"[DASHBOARD DATA ERROR] {exc}"
+        )
+
+        return JsonResponse(
+            {
+                "error": "Failed to load dashboard data."
+            },
+            status=500,
+        )
 
 
 # ============================================================
@@ -81,9 +106,7 @@ def training(request, session_id):
 @ensure_csrf_cookie
 def history(request):
 
-    sessions = service.get_recent_sessions(
-        limit=50
-    )
+    sessions = service.get_history_sessions()
 
     return render(
         request,

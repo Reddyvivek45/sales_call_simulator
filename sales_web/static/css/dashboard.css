@@ -242,31 +242,42 @@
 }
 
 
+@media (max-width: 900px) {
+
+    .dashboard-charts {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
 @media (max-width: 700px) {
 
     .dashboard {
 
         padding: 20px;
-    }
 
+    }
 
     .stats-grid {
 
         grid-template-columns: 1fr;
-    }
 
+    }
 
     .training-card {
 
         padding: 25px;
-    }
 
+    }
 
     .training-card-icon {
 
         display: none;
-    }
 
+    }
 
     .buyer-card {
 
@@ -275,12 +286,82 @@
         align-items: flex-start;
 
         gap: 20px;
-    }
 
+    }
 
     .personality {
 
         text-align: left;
+
     }
+
+}
+/* =========================================================
+   DASHBOARD CHARTS
+========================================================= */
+
+.dashboard-charts {
+
+    display: grid;
+
+    grid-template-columns:
+        1.2fr 1fr;
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.chart-card {
+
+    padding: 25px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    min-width: 0;
+}
+
+
+.chart-header h2 {
+
+    margin: 0;
+
+    font-size: 19px;
+
+}
+
+
+.chart-header p {
+
+    margin: 6px 0 0;
+
+    color: #275dc9;
+
+    font-size: 13px;
+
+}
+
+
+.chart-container {
+
+    position: relative;
+
+    height: 300px;
+
+    margin-top: 25px;
+
+}
+
+
+.chart-container canvas {
+
+    width: 100% !important;
+
+    height: 100% !important;
 
 }
