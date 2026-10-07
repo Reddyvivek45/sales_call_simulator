@@ -393,6 +393,63 @@ async function startTraining() {
         return;
     }
 
+    // Show mode chooser modal
+    showModeChooser();
+}
+
+
+// ============================================================
+// MODE CHOOSER
+// ============================================================
+
+const modeChooserOverlay =
+    document.getElementById(
+        "modeChooserOverlay"
+    );
+
+const modeChatOption =
+    document.getElementById("modeChat");
+
+const modeSimOption =
+    document.getElementById(
+        "modeSimulation"
+    );
+
+let selectedMode = null;
+
+
+function showModeChooser() {
+
+    if (modeChooserOverlay) {
+
+        modeChooserOverlay.classList.remove(
+            "hidden"
+        );
+    }
+}
+
+
+function hideModeChooser() {
+
+    if (modeChooserOverlay) {
+
+        modeChooserOverlay.classList.add(
+            "hidden"
+        );
+    }
+}
+
+
+// ============================================================
+// CREATE SESSION & NAVIGATE
+// ============================================================
+
+async function createSessionAndNavigate(
+    mode
+) {
+
+    hideModeChooser();
+
     startTrainingButton.disabled =
         true;
 
@@ -433,6 +490,7 @@ async function startTraining() {
 
                         session_length:
                             selectedLength,
+                        mode: mode,
 
                     }),
                 }
@@ -449,11 +507,19 @@ async function startTraining() {
             );
         }
 
-        // IMPORTANT:
-        // Go to actual training page.
+        // Navigate based on mode
 
-        window.location.href =
-            `/training/${data.session_id}/`;
+        if (mode === "simulation") {
+
+            window.location.href =
+                `/simulation/${data.session_id}/`;
+
+        } else {
+
+            // Default: chat mode
+            window.location.href =
+                `/training/${data.session_id}/`;
+        }
 
     } catch (error) {
 
@@ -472,6 +538,53 @@ async function startTraining() {
         startTrainingButton.textContent =
             "Start training →";
     }
+}
+
+
+// Mode option clicks
+
+if (modeChatOption) {
+
+    modeChatOption.addEventListener(
+        "click",
+        function () {
+
+            createSessionAndNavigate(
+                "chat"
+            );
+        }
+    );
+}
+
+if (modeSimOption) {
+
+    modeSimOption.addEventListener(
+        "click",
+        function () {
+
+            createSessionAndNavigate(
+                "simulation"
+            );
+        }
+    );
+}
+
+// Close modal on overlay click
+
+if (modeChooserOverlay) {
+
+    modeChooserOverlay.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                modeChooserOverlay
+            ) {
+                hideModeChooser();
+            }
+        }
+    );
 }
 
 
@@ -608,7 +721,7 @@ async function loadActiveSessions() {
                     function () {
 
                         resumeSession(
-                            session.id
+                            session.id,session.mode
                         );
 
                     }
@@ -641,10 +754,13 @@ async function loadActiveSessions() {
 // RESUME SESSION
 // ============================================================
 
-function resumeSession(sessionId) {
+function resumeSession(sessionId, mode) {
 
-    window.location.href =
-        `/training/${sessionId}/`;
+     if (mode === "simulation") {
+        window.location.href = `/simulation/${sessionId}/`;
+    } else {
+        window.location.href = `/training/${sessionId}/`;
+    }
 }
 
 

@@ -4,6 +4,8 @@ import json
 
 from config import MAX_HISTORY_MESSAGES
 
+from .topic_tracker import (TopicTracker,build_topic_instruction,)
+
 from rag.retriever import Retriever
 
 from persona.system_prompt import (
@@ -14,9 +16,7 @@ from persona.prompt_builder import (
     build_messages,
 )
 
-from llm.ollama_client import (
-    OllamaClient,
-)
+from llm.client import get_llm_client
 
 from database.repository import (
     SalesRepository,
@@ -47,22 +47,14 @@ class SalesSimulatorService:
 
         self.retriever = Retriever()
 
-        self.llm = OllamaClient()
+        self.llm = get_llm_client()
 
         self.repository = SalesRepository()
 
         self.analyzer = SessionAnalyzer()
+        self.topic_tracker = TopicTracker() 
+        self.system_prompt = (build_system_prompt())
 
-        # ------------------------------------------------
-        # BASE SYSTEM PROMPT
-        # ------------------------------------------------
-        #
-        # Personality is NOT added here because
-        # personality belongs to a specific session.
-        #
-        self.system_prompt = (
-            build_system_prompt()
-        )
 
 
     # ====================================================
@@ -84,6 +76,7 @@ class SalesSimulatorService:
         difficulty,
         focus_area,
         session_length,
+        mode,
     ):
 
         if not is_valid_personality(
@@ -119,6 +112,14 @@ class SalesSimulatorService:
         if focus_area == "":
             focus_area = None
 
+        initial_topic_state = json.dumps(self.topic_tracker.initial_state())                                         
+
+
+
+        valid_modes = {"chat", "simulation"}
+        if mode not in valid_modes:                   
+           raise ValueError("Invalid mode.")   
+
         session_id =self.repository.create_session(
 
                 client_name=CLIENT_NAME,
@@ -131,8 +132,11 @@ class SalesSimulatorService:
 
                 focus_area=focus_area,
 
+                topic_state=initial_topic_state,
+
                 session_length=session_length,
 
+                mode=mode,
             )
 
         opening_message = (
@@ -172,6 +176,7 @@ class SalesSimulatorService:
 
             "opening_message":
                 opening_message,
+            "mode": mode,  
 
         }
     def get_active_sessions(self, limit=50):
@@ -352,6 +357,29 @@ class SalesSimulatorService:
         rag_time = (
             time.time() - rag_start
         )
+        topic_state = json.loads(
+            session.get("topic_state") or "{}"
+        )
+
+        if not topic_state:
+            topic_state = self.topic_tracker.initial_state()
+
+        topic_state, topic_instruction_data = (
+            self.topic_tracker.process_turn(
+                topic_state,
+                user_message,
+                retrieved_context,
+            )
+        )
+
+        self.repository.update_topic_state(
+            session_id=session_id,
+            topic_state_json=json.dumps(topic_state),
+        )
+
+        topic_instruction = build_topic_instruction(
+            topic_instruction_data
+        )
 
         # ------------------------------------------------
         # Get recent conversation history
@@ -403,6 +431,7 @@ class SalesSimulatorService:
             personality_behavior=personality_behavior,
             difficulty_behavior=difficulty_behavior,
             focus_behavior=focus_area_behavior,
+            topic_instruction=topic_instruction,
 
         )
 

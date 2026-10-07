@@ -7,6 +7,7 @@ Training Setup | VijAI
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/setup.css' %}">
+<link rel="stylesheet" href="{% static 'css/simulation.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -307,6 +308,81 @@ Training Setup | VijAI
         </div>
 
     </section>
+
+
+    <!-- =====================================================
+         MODE CHOOSER MODAL
+    ====================================================== -->
+
+    <div
+        id="modeChooserOverlay"
+        class="mode-chooser-overlay hidden"
+    >
+
+        <div class="mode-chooser-card">
+
+            <div class="mode-chooser-title">
+                Choose Training Mode
+            </div>
+
+            <div class="mode-chooser-subtitle">
+                How would you like to practice this session?
+            </div>
+
+            <div class="mode-chooser-options">
+
+                <!-- CHAT -->
+
+                <div
+                    class="mode-option chat"
+                    id="modeChat"
+                >
+
+                    <div class="mode-option-icon">
+                        💬
+                    </div>
+
+                    <div class="mode-option-title">
+                        Chat Mode
+                    </div>
+
+                    <div class="mode-option-desc">
+                        Type your responses in a
+                        text conversation with the
+                        AI buyer.
+                    </div>
+
+                </div>
+
+
+                <!-- SIMULATION -->
+
+                <div
+                    class="mode-option simulation"
+                    id="modeSimulation"
+                >
+
+                    <div class="mode-option-icon">
+                        🎙
+                    </div>
+
+                    <div class="mode-option-title">
+                        Voice Simulation
+                    </div>
+
+                    <div class="mode-option-desc">
+                        Speak directly with the AI
+                        buyer in a real-time voice
+                        call.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <!-- =====================================================

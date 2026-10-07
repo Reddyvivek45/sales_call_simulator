@@ -29,6 +29,7 @@ def build_messages(
     history,
     retrieved_context,
     user_message,
+    topic_instruction=""
 ):
 
     context = format_context(retrieved_context)
@@ -103,6 +104,11 @@ Do not explain FIREAI for the salesperson.
 Do not repeat the salesperson's explanation.
 
 Follow the response rules defined in the system prompt.
+==================================================
+TOPIC TRACKING
+==================================================
+
+{topic_instruction}
 """
 
     messages = [

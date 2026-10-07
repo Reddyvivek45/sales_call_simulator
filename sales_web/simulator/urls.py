@@ -109,4 +109,39 @@ urlpatterns = [
         name="get_recent_sessions",
     ),
 
+
+    # ========================================================
+    # VOICE SIMULATION
+    # ========================================================
+
+    path(
+        "simulation/<str:session_id>/",
+        views.simulation,
+        name="simulation",
+    ),
+
+    path(
+        "api/voice/status/",
+        views.voice_status,
+        name="voice_status",
+    ),
+
+    path(
+        "api/voice/load-models/",
+        views.voice_load_models,
+        name="voice_load_models",
+    ),
+
+    path(
+        "api/voice/stt/",
+        views.voice_stt,
+        name="voice_stt",
+    ),
+
+    path(
+        "api/voice/tts/",
+        views.voice_tts,
+        name="voice_tts",
+    ),
+
 ]

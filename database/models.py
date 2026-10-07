@@ -47,12 +47,14 @@ class SalesSession(Base):
         String(100),
         nullable=True
     )
+    topic_state = Column(Text,nullable=False,default="{}")
 
     session_length = Column(
         String(20),
         nullable=False,
         default="quick"
     )
+    mode = Column(String(20),nullable=False,default="chat")
 
     started_at = Column(
         DateTime,

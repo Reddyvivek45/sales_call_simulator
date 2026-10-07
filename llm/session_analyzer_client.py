@@ -10,9 +10,9 @@ from config import (
 
 # Session Analyzer configuration
 ANALYZER_NUM_CTX = 8192
-ANALYZER_NUM_PREDICT = 1800
+ANALYZER_NUM_PREDICT = 2000
 ANALYZER_TEMPERATURE = 0.1
-ANALYZER_TIMEOUT = 300
+ANALYZER_TIMEOUT = 400
 
 
 class SessionAnalyzerOllamaClient:

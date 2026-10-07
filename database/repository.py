@@ -25,6 +25,8 @@ class SalesRepository:
         difficulty,
         focus_area,
         session_length,
+        mode,
+        topic_state,
     ):
 
         db = SessionLocal()
@@ -50,6 +52,10 @@ class SalesRepository:
                 focus_area=focus_area,
 
                 session_length=session_length,
+
+                mode=mode,
+
+                topic_state=topic_state,
 
                 status="active",
 
@@ -122,6 +128,9 @@ class SalesRepository:
 
                 "status":
                     session.status,
+                
+                "mode":session.mode,
+                "topic_state": session.topic_state,
 
             }
 
@@ -396,6 +405,8 @@ class SalesRepository:
 
                     "status":
                         session.status,
+
+                    "mode": session.mode,
                 }
 
                 for session in sessions
@@ -816,6 +827,36 @@ class SalesRepository:
             return history
 
         finally:
+            db.close()
+
+    # ========================================================
+# UPDATE TOPIC STATE
+# ========================================================
+
+    def update_topic_state(
+        self,
+        session_id,
+        topic_state_json,
+    ):
+
+        db = SessionLocal()
+
+        try:
+
+            session = (
+                db.query(SalesSession)
+                .filter(SalesSession.id == session_id)
+                .first()
+            )
+
+            if session:
+
+                session.topic_state = topic_state_json
+
+                db.commit()
+
+        finally:
+
             db.close()
 
     # ========================================================

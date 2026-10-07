@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Voice Simulation | Chanakya
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/simulation.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="simulation-page">
+
+    <!-- ==========================================================
+         LOADING OVERLAY
+    =========================================================== -->
+
+    <div id="simLoadingOverlay" class="sim-loading-overlay">
+
+        <div class="sim-loading-spinner"></div>
+
+        <div class="sim-loading-text" id="simLoadingText">
+            Initializing voice models...
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================================
+         HEADER
+    =========================================================== -->
+
+    <header class="sim-header">
+
+        <div class="sim-header-left">
+
+            <a href="{% url 'training_setup' %}" class="sim-back-btn">
+                ← Back
+            </a>
+
+            <div>
+                <div class="sim-session-label">
+                    Voice Simulation
+                </div>
+
+                <div class="sim-session-sub">
+                    KLM Fashion Mall · FIREAI
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sim-header-right">
+
+            <div class="sim-badge">
+                <span class="sim-badge-dot"></span>
+                Live Call
+            </div>
+
+            <div class="sim-settings-text">
+                Buyer:
+                <strong id="simPersonalityBadge">-</strong>
+                ·
+                Difficulty:
+                <strong id="simDifficultyBadge">-</strong>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==========================================================
+         CALL AREA
+    =========================================================== -->
+
+    <div class="sim-call-area">
+
+        <!-- Avatar -->
+
+        <div class="sim-avatar-ring">
+
+            <div class="sim-avatar-pulse" id="simAvatarPulse"></div>
+
+            <div class="sim-avatar" id="simAvatar">
+                🧑‍💼
+            </div>
+
+        </div>
+
+        <div class="sim-buyer-name" id="simBuyerName">
+            AI Buyer
+        </div>
+
+        <div class="sim-buyer-subtitle" id="simBuyerSubtitle">
+            Waiting to start...
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="sim-status" id="simStatus">
+            <span class="sim-status-icon">⏳</span>
+            <span id="simStatusText">Initializing...</span>
+        </div>
+
+
+        <!-- Waveform -->
+
+        <div class="sim-waveform" id="simWaveform">
+        </div>
+
+
+        <!-- Controls -->
+
+        <div class="sim-controls">
+
+            <button
+                id="simMicBtn"
+                class="sim-mic-btn"
+                type="button"
+                disabled
+                title="Hold to speak"
+            >
+                🎤
+            </button>
+
+            <button
+                id="simEndCallBtn"
+                class="sim-end-call-btn"
+                type="button"
+                title="End session"
+            >
+                ✕
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================================
+         TRANSCRIPT
+    =========================================================== -->
+
+    <div class="sim-transcript-panel" id="simTranscriptPanel">
+
+        <div class="sim-transcript-title">
+            📝 Live Transcript
+        </div>
+
+        <div
+            class="sim-transcript-messages"
+            id="simTranscriptMessages"
+        >
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================================
+         MODEL STATUS BAR
+    =========================================================== -->
+
+    <div class="sim-model-status">
+
+        <div class="sim-model-badge" id="sttBadge">
+            <span class="sim-model-badge-icon">🎙</span>
+            STT: Loading...
+        </div>
+
+        <div class="sim-model-badge" id="ttsBadge">
+            <span class="sim-model-badge-icon">🔊</span>
+            TTS: Loading...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+window.SIMULATION_CONFIG = {
+
+    sessionId:
+        "{{ session_id }}"
+
+};
+
+</script>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="{% static 'js/simulation.js' %}"></script>
+
+{% endblock %}

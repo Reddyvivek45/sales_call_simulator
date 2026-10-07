@@ -12,6 +12,7 @@ from django.views.decorators.http import (
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .services import SalesSimulatorService
+from . import voice_service
 
 
 service = SalesSimulatorService()
@@ -389,6 +390,10 @@ def create_session(request):
             .strip()
             .lower()
         )
+        mode = (
+            body.get("mode", "chat")
+            .strip()
+            .lower())
 
         if not personality:
 
@@ -405,6 +410,7 @@ def create_session(request):
             difficulty=difficulty,
             focus_area=focus_area,
             session_length=session_length,
+            mode=mode,
         )
 
         return JsonResponse(
@@ -617,3 +623,187 @@ def end_session(
             "status": "completed",
         }
     )
+
+
+# ============================================================
+# SIMULATION PAGE (VOICE)
+# ============================================================
+
+@require_GET
+@ensure_csrf_cookie
+def simulation(request, session_id):
+
+    session = service.get_session(
+        session_id
+    )
+
+    if not session:
+
+        return render(
+            request,
+            "setup/setup.html",
+        )
+
+    return render(
+        request,
+        "simulation/simulation.html",
+        {
+            "session_id": session_id,
+        },
+    )
+
+
+# ============================================================
+# VOICE MODEL STATUS
+# ============================================================
+
+@require_GET
+def voice_status(request):
+
+    status = voice_service.get_model_status()
+
+    return JsonResponse(status)
+
+
+# ============================================================
+# LOAD VOICE MODELS
+# ============================================================
+
+@require_POST
+def voice_load_models(request):
+
+    try:
+
+        status = voice_service.load_all_models()
+
+        return JsonResponse(status)
+
+    except Exception as exc:
+
+        print(
+            f"[VOICE LOAD ERROR] {exc}"
+        )
+
+        return JsonResponse(
+            {
+                "error": str(exc),
+            },
+            status=500,
+        )
+
+
+# ============================================================
+# STT — SPEECH TO TEXT (Whisper)
+# ============================================================
+
+@require_POST
+def voice_stt(request):
+
+    try:
+
+        audio_file = request.FILES.get(
+            "audio"
+        )
+
+        if not audio_file:
+
+            return JsonResponse(
+                {
+                    "error":
+                        "No audio file uploaded.",
+                },
+                status=400,
+            )
+
+        audio_bytes = audio_file.read()
+
+        result = voice_service.transcribe_audio(
+            audio_bytes
+        )
+
+        return JsonResponse(result)
+
+    except Exception as exc:
+
+        print(
+            f"[STT ERROR] {exc}"
+        )
+
+        return JsonResponse(
+            {
+                "error": str(exc),
+            },
+            status=500,
+        )
+
+
+# ============================================================
+# TTS — TEXT TO SPEECH (Kokoro)
+# ============================================================
+
+@require_POST
+def voice_tts(request):
+
+    try:
+
+        body = json.loads(
+            request.body
+        )
+
+        text = body.get(
+            "text",
+            "",
+        ).strip()
+
+        if not text:
+
+            return JsonResponse(
+                {
+                    "error":
+                        "No text provided.",
+                },
+                status=400,
+            )
+
+        audio_bytes = (
+            voice_service.synthesize_speech(
+                text
+            )
+        )
+
+        from django.http import HttpResponse
+
+        response = HttpResponse(
+            audio_bytes,
+            content_type="audio/wav",
+        )
+
+        response[
+            "Content-Disposition"
+        ] = (
+            'inline; filename="speech.wav"'
+        )
+
+        return response
+
+    except json.JSONDecodeError:
+
+        return JsonResponse(
+            {
+                "error": "Invalid JSON.",
+            },
+            status=400,
+        )
+
+    except Exception as exc:
+
+        print(
+            f"[TTS ERROR] {exc}"
+        )
+
+        return JsonResponse(
+            {
+                "error": str(exc),
+            },
+            status=500,
+        )

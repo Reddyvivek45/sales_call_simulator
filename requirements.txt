@@ -5,3 +5,7 @@ requests
 sqlalchemy
 psycopg[binary]
 django
+faster-whisper
+kokoro
+soundfile
+numpy
