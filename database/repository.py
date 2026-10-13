@@ -27,6 +27,7 @@ class SalesRepository:
         session_length,
         mode,
         topic_state,
+        user_id,
     ):
 
         db = SessionLocal()
@@ -56,6 +57,7 @@ class SalesRepository:
                 mode=mode,
 
                 topic_state=topic_state,
+                user_id=user_id, 
 
                 status="active",
 
@@ -117,6 +119,8 @@ class SalesRepository:
 
                 "session_length":
                     session.session_length,
+
+                "user_id": session.user_id,
 
                 "started_at":
                     session.started_at.isoformat(),
@@ -259,6 +263,7 @@ class SalesRepository:
 
     def get_recent_sessions(
         self,
+        user_id, 
         client_name="KLM Fashion Mall",
         limit=20,
     ):
@@ -270,8 +275,8 @@ class SalesRepository:
             sessions = (
                 db.query(SalesSession)
                 .filter(
-                    SalesSession.client_name
-                    == client_name
+                    SalesSession.client_name== client_name,
+                    SalesSession.user_id == user_id, 
                 )
                 .order_by(
                     SalesSession.started_at.desc()
@@ -353,6 +358,7 @@ class SalesRepository:
 
     def get_active_sessions(
         self,
+        user_id,
         client_name="KLM Fashion Mall",
         limit=50,
     ):
@@ -364,11 +370,10 @@ class SalesRepository:
             sessions = (
                 db.query(SalesSession)
                 .filter(
-                    SalesSession.client_name ==
-                    client_name,
+                    SalesSession.client_name ==client_name,
+                    SalesSession.user_id == user_id,
 
-                    SalesSession.status ==
-                    "active",
+                    SalesSession.status =="active",
                 )
                 .order_by(
                     SalesSession.started_at.desc()
@@ -493,6 +498,7 @@ class SalesRepository:
 
     def get_dashboard_data(
         self,
+        user_id,
         client_name="KLM Fashion Mall",
     ):
         db = SessionLocal()
@@ -508,6 +514,7 @@ class SalesRepository:
                 .filter(
                     SalesSession.client_name == client_name,
                     SalesSession.status == "completed",
+                    SalesSession.user_id == user_id,
                 )
                 .order_by(
                     SalesSession.started_at.asc()
@@ -531,6 +538,7 @@ class SalesRepository:
                 )
                 .filter(
                     SalesSession.client_name == client_name,
+                    SalesSession.user_id == user_id,
                     SalesSession.status == "completed",
                 )
                 .order_by(
@@ -770,6 +778,7 @@ class SalesRepository:
     
     def get_history_sessions(
         self,
+        user_id,
         client_name="KLM Fashion Mall",
     ):
 
@@ -789,6 +798,7 @@ class SalesRepository:
                 )
                 .filter(
                     SalesSession.client_name == client_name,
+                    SalesSession.user_id == user_id,
                     SalesSession.status == "completed",
                 )
                 .order_by(

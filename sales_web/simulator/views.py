@@ -1,15 +1,12 @@
 import json
+from functools import wraps
 
-from django.shortcuts import render
-from django.http import (
-    JsonResponse,
-    StreamingHttpResponse,
-)
-from django.views.decorators.http import (
-    require_GET,
-    require_POST,
-)
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, StreamingHttpResponse
+from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from .services import SalesSimulatorService
 from . import voice_service
@@ -19,40 +16,123 @@ service = SalesSimulatorService()
 
 
 # ============================================================
-# DASHBOARD
+# AUTH HELPERS
+# ============================================================
+
+def api_login_required(view_func):
+    """
+    Like @login_required, but returns a 401 JSON response
+    instead of redirecting — for API endpoints the frontend
+    reads with fetch(), where a redirect to an HTML login
+    page would break JSON parsing.
+    """
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+
+        if not request.user.is_authenticated:
+
+            return JsonResponse(
+                {"error": "Authentication required."},
+                status=401,
+            )
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+
+def _owns_session(request, session):
+    """
+    True only if the session exists and belongs to the
+    current user. Returning 404 (not 403) for both "doesn't
+    exist" and "belongs to someone else" avoids leaking
+    which session IDs are real.
+    """
+
+    return (
+        session is not None
+        and session.get("user_id") == request.user.id
+    )
+
+
+# ============================================================
+# LOGIN / LOGOUT
 # ============================================================
 
 @require_GET
 @ensure_csrf_cookie
-def dashboard(request):
+def login_page(request):
 
-    return render(
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    return render(request, "auth/login.html")
+
+
+@require_POST
+def login_submit(request):
+
+    username = request.POST.get("username", "").strip()
+    password = request.POST.get("password", "")
+
+    user = authenticate(
         request,
-        "dashboard/dashboard.html",
+        username=username,
+        password=password,
     )
+
+    if user is None:
+
+        return render(
+            request,
+            "auth/login.html",
+            {"error": "Invalid username or password."},
+        )
+
+    login(request, user)
+
+    return redirect("dashboard")
+
+
+@require_POST
+def logout_view(request):
+
+    logout(request)
+
+    return redirect("login")
+
+
 # ============================================================
-# DASHBOARD DATA
+# DASHBOARD
 # ============================================================
 
 @require_GET
+@login_required
+@ensure_csrf_cookie
+def dashboard(request):
+
+    return render(request, "dashboard/dashboard.html")
+
+
+@require_GET
+@api_login_required
 def dashboard_data(request):
 
     try:
 
-        data = service.get_dashboard_data()
+        data = service.get_dashboard_data(
+            user_id=request.user.id
+        )
 
         return JsonResponse(data)
 
     except Exception as exc:
 
-        print(
-            f"[DASHBOARD DATA ERROR] {exc}"
-        )
+        print(f"[DASHBOARD DATA ERROR] {exc}")
 
         return JsonResponse(
-            {
-                "error": "Failed to load dashboard data."
-            },
+            {"error": "Failed to load dashboard data."},
             status=500,
         )
 
@@ -62,13 +142,11 @@ def dashboard_data(request):
 # ============================================================
 
 @require_GET
+@login_required
 @ensure_csrf_cookie
 def training_setup(request):
 
-    return render(
-        request,
-        "setup/setup.html",
-    )
+    return render(request, "setup/setup.html")
 
 
 # ============================================================
@@ -76,26 +154,19 @@ def training_setup(request):
 # ============================================================
 
 @require_GET
+@login_required
 @ensure_csrf_cookie
 def training(request, session_id):
 
-    session = service.get_session(
-        session_id
-    )
+    session = service.get_session(session_id)
 
-    if not session:
-
-        return render(
-            request,
-            "setup/setup.html",
-        )
+    if not _owns_session(request, session):
+        return render(request, "setup/setup.html")
 
     return render(
         request,
         "training/training.html",
-        {
-            "session_id": session_id,
-        },
+        {"session_id": session_id},
     )
 
 
@@ -104,18 +175,15 @@ def training(request, session_id):
 # ============================================================
 
 @require_GET
+@login_required
 @ensure_csrf_cookie
 def history(request):
 
-    sessions = service.get_history_sessions()
-
-    return render(
-        request,
-        "history/history.html",
-        {
-            "sessions": sessions,
-        },
+    sessions = service.get_history_sessions(
+        user_id=request.user.id
     )
+
+    return render(request, "history/history.html", {"sessions": sessions})
 
 
 # ============================================================
@@ -123,26 +191,20 @@ def history(request):
 # ============================================================
 
 @require_GET
+@login_required
 @ensure_csrf_cookie
-def session_analysis(
-    request,
-    session_id,
-):
+def session_analysis(request, session_id):
 
     try:
 
-        session = service.get_session(
-            session_id
-        )
+        session = service.get_session(session_id)
 
-        if not session:
+        if not _owns_session(request, session):
 
             return render(
                 request,
                 "analysis/session_analysis.html",
-                {
-                    "error": "Session not found.",
-                },
+                {"error": "Session not found."},
             )
 
         if session["status"] != "completed":
@@ -150,25 +212,10 @@ def session_analysis(
             return render(
                 request,
                 "analysis/session_analysis.html",
-                {
-                    "error": (
-                        "Only completed sessions "
-                        "can be analyzed."
-                    ),
-                },
+                {"error": "Only completed sessions can be analyzed."},
             )
 
-        # ----------------------------------------------------
-        # IMPORTANT
-        #
-        # DO NOT CALL OLLAMA HERE.
-        #
-        # Only check whether analysis already exists.
-        # ----------------------------------------------------
-
-        analysis = service.get_session_analysis(
-            session_id
-        )
+        analysis = service.get_session_analysis(session_id)
 
         return render(
             request,
@@ -182,16 +229,12 @@ def session_analysis(
 
     except Exception as exc:
 
-        print(
-            f"SESSION ANALYSIS PAGE ERROR: {exc}"
-        )
+        print(f"SESSION ANALYSIS PAGE ERROR: {exc}")
 
         return render(
             request,
             "analysis/session_analysis.html",
-            {
-                "error": str(exc),
-            },
+            {"error": str(exc)},
         )
 
 
@@ -200,87 +243,51 @@ def session_analysis(
 # ============================================================
 
 @require_POST
-def generate_session_analysis(
-    request,
-    session_id,
-):
+@api_login_required
+def generate_session_analysis(request, session_id):
 
     try:
 
-        session = service.get_session(
-            session_id
-        )
+        session = service.get_session(session_id)
 
-        if not session:
+        if not _owns_session(request, session):
 
             return JsonResponse(
-                {
-                    "error": "Session not found.",
-                },
+                {"error": "Session not found."},
                 status=404,
             )
 
         if session["status"] != "completed":
 
             return JsonResponse(
-                {
-                    "error": (
-                        "Only completed sessions "
-                        "can be analyzed."
-                    ),
-                },
+                {"error": "Only completed sessions can be analyzed."},
                 status=400,
             )
 
-        # ----------------------------------------------------
-        # DB FIRST
-        #
-        # If report already exists, NEVER call Ollama.
-        # ----------------------------------------------------
-
-        existing = service.get_session_analysis(
-            session_id
-        )
+        existing = service.get_session_analysis(session_id)
 
         if existing:
 
             return JsonResponse(
-                {
-                    "status": "completed",
-                    "analysis": existing,
-                }
+                {"status": "completed", "analysis": existing}
             )
 
-        print(
-            f"[ANALYZER] Starting analysis: {session_id}"
-        )
+        print(f"[ANALYZER] Starting analysis: {session_id}")
 
-        analysis = service.analyze_session(
-            session_id
-        )
+        analysis = service.analyze_session(session_id)
 
-        print(
-            f"[ANALYZER] Analysis completed: {session_id}"
-        )
+        print(f"[ANALYZER] Analysis completed: {session_id}")
 
         return JsonResponse(
-            {
-                "status": "completed",
-                "analysis": analysis,
-            }
+            {"status": "completed", "analysis": analysis}
         )
 
     except Exception as exc:
 
-        print(
-            f"[ANALYZER] ERROR: {exc}"
-        )
+        print(f"[ANALYZER] ERROR: {exc}")
 
         return JsonResponse(
-            {
-                "status": "error",
-                "error": str(exc),
-            },
+            {"status": "error", "error": str(exc)},
             status=500,
         )
 
@@ -290,43 +297,36 @@ def generate_session_analysis(
 # ============================================================
 
 @require_GET
-def session_analysis_status(
-    request,
-    session_id,
-):
+@api_login_required
+def session_analysis_status(request, session_id):
 
     try:
 
-        analysis = service.get_session_analysis(
-            session_id
-        )
+        session = service.get_session(session_id)
+
+        if not _owns_session(request, session):
+
+            return JsonResponse(
+                {"error": "Session not found."},
+                status=404,
+            )
+
+        analysis = service.get_session_analysis(session_id)
 
         if analysis:
 
             return JsonResponse(
-                {
-                    "status": "completed",
-                    "analysis": analysis,
-                }
+                {"status": "completed", "analysis": analysis}
             )
 
-        return JsonResponse(
-            {
-                "status": "pending",
-            }
-        )
+        return JsonResponse({"status": "pending"})
 
     except Exception as exc:
 
-        print(
-            f"[ANALYZER STATUS ERROR] {exc}"
-        )
+        print(f"[ANALYZER STATUS ERROR] {exc}")
 
         return JsonResponse(
-            {
-                "status": "error",
-                "error": str(exc),
-            },
+            {"status": "error", "error": str(exc)},
             status=500,
         )
 
@@ -336,15 +336,12 @@ def session_analysis_status(
 # ============================================================
 
 @require_GET
+@api_login_required
 def get_personalities(request):
 
     personalities = service.get_personalities()
 
-    return JsonResponse(
-        {
-            "personalities": personalities,
-        }
-    )
+    return JsonResponse({"personalities": personalities})
 
 
 # ============================================================
@@ -352,56 +349,23 @@ def get_personalities(request):
 # ============================================================
 
 @require_POST
+@api_login_required
 def create_session(request):
 
     try:
 
-        body = json.loads(
-            request.body
-        )
+        body = json.loads(request.body)
 
-        personality = (
-            body.get(
-                "personality",
-                "",
-            )
-            .strip()
-            .lower()
-        )
-
-        difficulty = (
-            body.get(
-                "difficulty",
-                "medium",
-            )
-            .strip()
-            .lower()
-        )
-
-        focus_area = body.get(
-            "focus_area"
-        )
-
-        session_length = (
-            body.get(
-                "session_length",
-                "quick",
-            )
-            .strip()
-            .lower()
-        )
-        mode = (
-            body.get("mode", "chat")
-            .strip()
-            .lower())
+        personality = body.get("personality", "").strip().lower()
+        difficulty = body.get("difficulty", "medium").strip().lower()
+        focus_area = body.get("focus_area")
+        session_length = body.get("session_length", "quick").strip().lower()
+        mode = body.get("mode", "chat").strip().lower() 
 
         if not personality:
 
             return JsonResponse(
-                {
-                    "error":
-                        "Personality is required.",
-                },
+                {"error": "Personality is required."},
                 status=400,
             )
 
@@ -410,42 +374,26 @@ def create_session(request):
             difficulty=difficulty,
             focus_area=focus_area,
             session_length=session_length,
+            user_id=request.user.id,         # NEW
             mode=mode,
         )
 
-        return JsonResponse(
-            result
-        )
+        return JsonResponse(result)
 
     except json.JSONDecodeError:
 
-        return JsonResponse(
-            {
-                "error": "Invalid JSON.",
-            },
-            status=400,
-        )
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
 
     except ValueError as exc:
 
-        return JsonResponse(
-            {
-                "error": str(exc),
-            },
-            status=400,
-        )
+        return JsonResponse({"error": str(exc)}, status=400)
 
     except Exception as exc:
 
-        print(
-            f"CREATE SESSION ERROR: {exc}"
-        )
+        print(f"CREATE SESSION ERROR: {exc}")
 
         return JsonResponse(
-            {
-                "error":
-                    "Failed to create session.",
-            },
+            {"error": "Failed to create session."},
             status=500,
         )
 
@@ -455,27 +403,19 @@ def create_session(request):
 # ============================================================
 
 @require_GET
-def get_session_details(
-    request,
-    session_id,
-):
+@api_login_required
+def get_session_details(request, session_id):
 
-    session = service.get_session(
-        session_id
-    )
+    session = service.get_session(session_id)
 
-    if not session:
+    if not _owns_session(request, session):
 
         return JsonResponse(
-            {
-                "error": "Session not found.",
-            },
+            {"error": "Session not found."},
             status=404,
         )
 
-    return JsonResponse(
-        session
-    )
+    return JsonResponse(session)
 
 
 # ============================================================
@@ -483,20 +423,21 @@ def get_session_details(
 # ============================================================
 
 @require_GET
-def get_session_messages(
-    request,
-    session_id,
-):
+@api_login_required
+def get_session_messages(request, session_id):
 
-    messages = service.get_history(
-        session_id
-    )
+    session = service.get_session(session_id)
 
-    return JsonResponse(
-        {
-            "messages": messages,
-        }
-    )
+    if not _owns_session(request, session):
+
+        return JsonResponse(
+            {"error": "Session not found."},
+            status=404,
+        )
+
+    messages = service.get_history(session_id)
+
+    return JsonResponse({"messages": messages})
 
 
 # ============================================================
@@ -504,17 +445,15 @@ def get_session_messages(
 # ============================================================
 
 @require_GET
+@api_login_required
 def get_recent_sessions(request):
 
     sessions = service.get_recent_sessions(
-        limit=50
+        user_id=request.user.id,
+        limit=50,
     )
 
-    return JsonResponse(
-        {
-            "sessions": sessions,
-        }
-    )
+    return JsonResponse({"sessions": sessions})
 
 
 # ============================================================
@@ -522,17 +461,15 @@ def get_recent_sessions(request):
 # ============================================================
 
 @require_GET
+@api_login_required
 def get_active_sessions(request):
 
     sessions = service.get_active_sessions(
-        limit=50
+        user_id=request.user.id,
+        limit=50,
     )
 
-    return JsonResponse(
-        {
-            "sessions": sessions,
-        }
-    )
+    return JsonResponse({"sessions": sessions})
 
 
 # ============================================================
@@ -540,43 +477,34 @@ def get_active_sessions(request):
 # ============================================================
 
 @require_POST
-def chat(
-    request,
-    session_id,
-):
+@api_login_required
+def chat(request, session_id):
+
+    session = service.get_session(session_id)
+
+    if not _owns_session(request, session):
+
+        return JsonResponse(
+            {"error": "Session not found."},
+            status=404,
+        )
 
     try:
 
-        body = json.loads(
-            request.body
-        )
+        body = json.loads(request.body)
 
-        user_message = (
-            body.get(
-                "message",
-                "",
-            )
-            .strip()
-        )
+        user_message = body.get("message", "").strip()
 
         if not user_message:
 
             return JsonResponse(
-                {
-                    "error":
-                        "Message cannot be empty.",
-                },
+                {"error": "Message cannot be empty."},
                 status=400,
             )
 
     except json.JSONDecodeError:
 
-        return JsonResponse(
-            {
-                "error": "Invalid JSON.",
-            },
-            status=400,
-        )
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
 
     def event_stream():
 
@@ -585,13 +513,7 @@ def chat(
             user_message=user_message,
         ):
 
-            yield (
-                json.dumps(
-                    event,
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
+            yield json.dumps(event, ensure_ascii=False) + "\n"
 
     response = StreamingHttpResponse(
         event_stream(),
@@ -609,20 +531,21 @@ def chat(
 # ============================================================
 
 @require_POST
-def end_session(
-    request,
-    session_id,
-):
+@api_login_required
+def end_session(request, session_id):
 
-    service.end_session(
-        session_id
-    )
+    session = service.get_session(session_id)
 
-    return JsonResponse(
-        {
-            "status": "completed",
-        }
-    )
+    if not _owns_session(request, session):
+
+        return JsonResponse(
+            {"error": "Session not found."},
+            status=404,
+        )
+
+    service.end_session(session_id)
+
+    return JsonResponse({"status": "completed"})
 
 
 # ============================================================
@@ -630,34 +553,28 @@ def end_session(
 # ============================================================
 
 @require_GET
+@login_required
 @ensure_csrf_cookie
 def simulation(request, session_id):
 
-    session = service.get_session(
-        session_id
-    )
+    session = service.get_session(session_id)
 
-    if not session:
-
-        return render(
-            request,
-            "setup/setup.html",
-        )
+    if not _owns_session(request, session):
+        return render(request, "setup/setup.html")
 
     return render(
         request,
         "simulation/simulation.html",
-        {
-            "session_id": session_id,
-        },
+        {"session_id": session_id},
     )
 
 
 # ============================================================
-# VOICE MODEL STATUS
+# VOICE MODEL STATUS / LOAD / STT / TTS
 # ============================================================
 
 @require_GET
+@api_login_required
 def voice_status(request):
 
     status = voice_service.get_model_status()
@@ -665,11 +582,8 @@ def voice_status(request):
     return JsonResponse(status)
 
 
-# ============================================================
-# LOAD VOICE MODELS
-# ============================================================
-
 @require_POST
+@api_login_required
 def voice_load_models(request):
 
     try:
@@ -680,130 +594,69 @@ def voice_load_models(request):
 
     except Exception as exc:
 
-        print(
-            f"[VOICE LOAD ERROR] {exc}"
-        )
+        print(f"[VOICE LOAD ERROR] {exc}")
 
-        return JsonResponse(
-            {
-                "error": str(exc),
-            },
-            status=500,
-        )
+        return JsonResponse({"error": str(exc)}, status=500)
 
-
-# ============================================================
-# STT — SPEECH TO TEXT (Whisper)
-# ============================================================
 
 @require_POST
+@api_login_required
 def voice_stt(request):
 
     try:
 
-        audio_file = request.FILES.get(
-            "audio"
-        )
+        audio_file = request.FILES.get("audio")
 
         if not audio_file:
 
             return JsonResponse(
-                {
-                    "error":
-                        "No audio file uploaded.",
-                },
+                {"error": "No audio file uploaded."},
                 status=400,
             )
 
         audio_bytes = audio_file.read()
 
-        result = voice_service.transcribe_audio(
-            audio_bytes
-        )
+        result = voice_service.transcribe_audio(audio_bytes)
 
         return JsonResponse(result)
 
     except Exception as exc:
 
-        print(
-            f"[STT ERROR] {exc}"
-        )
+        print(f"[STT ERROR] {exc}")
 
-        return JsonResponse(
-            {
-                "error": str(exc),
-            },
-            status=500,
-        )
+        return JsonResponse({"error": str(exc)}, status=500)
 
-
-# ============================================================
-# TTS — TEXT TO SPEECH (Kokoro)
-# ============================================================
 
 @require_POST
+@api_login_required
 def voice_tts(request):
 
     try:
 
-        body = json.loads(
-            request.body
-        )
+        body = json.loads(request.body)
 
-        text = body.get(
-            "text",
-            "",
-        ).strip()
+        text = body.get("text", "").strip()
 
         if not text:
 
-            return JsonResponse(
-                {
-                    "error":
-                        "No text provided.",
-                },
-                status=400,
-            )
+            return JsonResponse({"error": "No text provided."}, status=400)
 
-        audio_bytes = (
-            voice_service.synthesize_speech(
-                text
-            )
-        )
+        audio_bytes = voice_service.synthesize_speech(text)
 
         from django.http import HttpResponse
 
-        response = HttpResponse(
-            audio_bytes,
-            content_type="audio/wav",
-        )
+        response = HttpResponse(audio_bytes, content_type="audio/wav")
 
-        response[
-            "Content-Disposition"
-        ] = (
-            'inline; filename="speech.wav"'
-        )
+        response["Content-Disposition"] = 'inline; filename="speech.wav"'
 
         return response
 
     except json.JSONDecodeError:
 
-        return JsonResponse(
-            {
-                "error": "Invalid JSON.",
-            },
-            status=400,
-        )
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
 
     except Exception as exc:
 
-        print(
-            f"[TTS ERROR] {exc}"
-        )
+        print(f"[TTS ERROR] {exc}")
 
-        return JsonResponse(
-            {
-                "error": str(exc),
-            },
-            status=500,
-        )
+        return JsonResponse({"error": str(exc)}, status=500)

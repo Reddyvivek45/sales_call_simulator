@@ -244,7 +244,48 @@ body {
 
     font-size: 11px;
 }
+.logout-form {
 
+    margin-top: 6px;
+}
+
+
+.logout-button {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 12px;
+
+    border-radius: 8px;
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    color: #cbd5e1;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    text-align: left;
+
+    transition: background 0.15s ease;
+}
+
+
+.logout-button span:not(.nav-icon) {
+
+    display: none;
+}
 
 /* =========================================================
    MAIN

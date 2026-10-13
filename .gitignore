@@ -8,7 +8,7 @@ session/
 commands.txt
 sales_call.txt
 rag/__pycache__/
-rag/chromadb/
+rag/chroma_db/
 database/__pycache__/
 database/__init__.py
 llm/__pycache__/
@@ -18,4 +18,4 @@ sales_web/simulator/__init__.py
 sales_web/sales_web/__pycache__/
 sales_web/sales_web/__init__.py
 readme.md
-
+test.py

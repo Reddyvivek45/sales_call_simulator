@@ -72,6 +72,7 @@ class SalesSimulatorService:
 
     def create_session(
         self,
+        user_id,
         personality,
         difficulty,
         focus_area,
@@ -135,6 +136,8 @@ class SalesSimulatorService:
                 topic_state=initial_topic_state,
 
                 session_length=session_length,
+                
+                user_id=user_id,
 
                 mode=mode,
             )
@@ -179,10 +182,11 @@ class SalesSimulatorService:
             "mode": mode,  
 
         }
-    def get_active_sessions(self, limit=50):
+    def get_active_sessions(self,user_id, limit=50):
 
         return self.repository.get_active_sessions(
             client_name=CLIENT_NAME,
+            user_id=user_id, 
             limit=limit,
         )
 
@@ -219,11 +223,13 @@ class SalesSimulatorService:
 
     def get_recent_sessions(
         self,
+        user_id, 
         limit=20,
     ):
 
         return self.repository.get_recent_sessions(
             client_name=CLIENT_NAME,
+            user_id=user_id,
             limit=limit,
         )
 
@@ -231,9 +237,9 @@ class SalesSimulatorService:
     # DASHBOARD DATA
     # ====================================================
 
-    def get_dashboard_data(self):
+    def get_dashboard_data(self,user_id):
 
-        return self.repository.get_dashboard_data(client_name=CLIENT_NAME)
+        return self.repository.get_dashboard_data(client_name=CLIENT_NAME, user_id=user_id,)
 
     # ====================================================
     # CHAT STREAM
@@ -573,9 +579,9 @@ class SalesSimulatorService:
     # ====================================================
 
 
-    def get_history_sessions(self,client_name=CLIENT_NAME,):
+    def get_history_sessions(self,user_id,client_name=CLIENT_NAME,):
 
-        return self.repository.get_history_sessions(client_name=client_name,)
+        return self.repository.get_history_sessions(client_name=client_name,user_id=user_id)
     
     # ====================================================
     # END SESSION

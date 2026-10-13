@@ -6,6 +6,7 @@ from sqlalchemy import (
     Text,
     DateTime,
     ForeignKey,
+    Integer,
 )
 
 from sqlalchemy.orm import declarative_base
@@ -22,6 +23,7 @@ class SalesSession(Base):
         String(36),
         primary_key=True
     )
+    user_id = Column(Integer, nullable=True)
 
     client_name = Column(
         String(255),

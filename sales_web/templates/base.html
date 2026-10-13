@@ -119,13 +119,13 @@
             <div class="user-profile">
 
                 <div class="user-avatar">
-                    V
+                    {{ request.user.username|first|upper }}
                 </div>
 
                 <div class="user-details">
 
                     <div class="user-name">
-                        Vivek
+                        {{ request.user.username }}
                     </div>
 
                     <div class="user-role">
@@ -135,6 +135,28 @@
                 </div>
 
             </div>
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button type="submit" class="nav-item logout-button">
+
+                    <span class="nav-icon">
+                        ⏻
+                    </span>
+
+                    <span>
+                        Log out
+                    </span>
+
+                </button>
+
+            </form>
 
         </div>
 
